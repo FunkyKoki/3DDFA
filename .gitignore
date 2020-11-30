@@ -17,7 +17,6 @@ samples/*.txt
 *.ipynb
 tmp/
 
-models/shape_predictor_68_face_landmarks.dat
 .DS_Store
 
 demo_obama/
