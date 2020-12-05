@@ -15,6 +15,7 @@ def parse_pose(param):
     Ps = param[:12].reshape(3, -1)  # camera matrix
     # R = P[:, :3]
     s, R, t3d = P2sRt(Ps)
+    # print(s)
     P = np.concatenate((R, t3d.reshape(3, -1)), axis=1)  # without scale
     # P = Ps / s
     pose = matrix2angle(R)  # yaw, pitch, roll
@@ -59,7 +60,9 @@ def P2sRt(P):
         R: (3, 3). rotation matrix.
         t2d: (2,). 2d translation.
     '''
-    t3d = P[:, 3]
+    t3d = P[:, 3] # 平移距离
+    # print(t3d.shape)
+    # print(t3d)
     R1 = P[0:1, :3]
     R2 = P[1:2, :3]
     s = (np.linalg.norm(R1) + np.linalg.norm(R2)) / 2.0

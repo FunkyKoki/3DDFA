@@ -72,8 +72,10 @@ def plot_pose_box(image, Ps, pts68s, color=(40, 255, 0), line_width=2):
         P = Ps[i]
 
         # Map to 2d image points
-        point_3d_homo = np.hstack((point_3d, np.ones([point_3d.shape[0], 1])))  # n x 4
-        point_2d = point_3d_homo.dot(P.T)[:, :2]
+        point_3d_homo = np.hstack((point_3d, np.ones([point_3d.shape[0], 1])))  # 10 x 4
+        # print(point_3d_homo)
+        point_2d = point_3d_homo.dot(P.T)[:, :2]  # 10 x 2
+        # print(point_2d.shape)
 
         point_2d[:, 1] = - point_2d[:, 1]
         point_2d[:, :2] = point_2d[:, :2] - np.mean(point_2d[:4, :2], 0) + np.mean(pts68[:2, :27], 1)

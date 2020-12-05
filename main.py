@@ -41,6 +41,7 @@ def main(args):
     model_dict = model.state_dict()
     # because the model is trained by multiple gpus, prefix module should be removed
     for k in checkpoint.keys():
+        # print(k)
         model_dict[k.replace('module.', '')] = checkpoint[k]
     model.load_state_dict(model_dict)
     if args.mode == 'gpu':
@@ -84,8 +85,10 @@ def main(args):
             # whether use dlib landmark to crop image, if not, use only face bbox to calc roi bbox for cropping
             if args.dlib_landmark:
                 # - use landmark for cropping
+                # print(dir(face_regressor(img_ori, rect)))
+                # print(face_regressor(img_ori, rect))
                 pts = face_regressor(img_ori, rect).parts()
-                pts = np.array([[pt.x, pt.y] for pt in pts]).T
+                pts = np.array([[pt.x, pt.y] for pt in pts]).T  # shape(2, 68)
                 roi_box = parse_roi_box_from_landmark(pts)
             else:
                 # - use detected face bbox
@@ -101,10 +104,12 @@ def main(args):
                 if args.mode == 'gpu':
                     input = input.cuda()
                 param = model(input)
+                print(param.size())
                 param = param.squeeze().cpu().numpy().flatten().astype(np.float32)
 
             # 68 pts
-            pts68 = predict_68pts(param, roi_box)
+            pts68 = predict_68pts(param, roi_box)  # shape (3, 68)
+            # print(pts68.shape)
 
             # two-step for more accurate bbox to crop face
             if args.bbox_init == 'two':
@@ -130,6 +135,7 @@ def main(args):
                 vertices = predict_dense(param, roi_box)
                 vertices_lst.append(vertices)
             if args.dump_ply:
+                # PLY文件格式是Stanford大学开发的一套三维mesh模型数据格式
                 dump_to_ply(vertices, tri, '{}_{}.ply'.format(img_fp.replace(suffix, ''), ind))
             if args.dump_vertex:
                 dump_vertex(vertices, '{}_{}.mat'.format(img_fp.replace(suffix, ''), ind))
@@ -194,7 +200,7 @@ if __name__ == '__main__':
     parser.add_argument('--dump_pose', default='true', type=str2bool)
     parser.add_argument('--dump_depth', default='true', type=str2bool)
     parser.add_argument('--dump_pncc', default='true', type=str2bool)
-    parser.add_argument('--dump_paf', default='false', type=str2bool)
+    parser.add_argument('--dump_paf', default='true', type=str2bool)
     parser.add_argument('--paf_size', default=3, type=int, help='PAF feature kernel size')
     parser.add_argument('--dump_obj', default='true', type=str2bool)
     parser.add_argument('--dlib_bbox', default='true', type=str2bool, help='whether use dlib to predict bbox')

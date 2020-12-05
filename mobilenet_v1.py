@@ -21,8 +21,7 @@ class DepthWiseBlock(nn.Module):
     def __init__(self, inplanes, planes, stride=1, prelu=False):
         super(DepthWiseBlock, self).__init__()
         inplanes, planes = int(inplanes), int(planes)
-        self.conv_dw = nn.Conv2d(inplanes, inplanes, kernel_size=3, padding=1, stride=stride, groups=inplanes,
-                                 bias=False)
+        self.conv_dw = nn.Conv2d(inplanes, inplanes, kernel_size=3, padding=1, stride=stride, groups=inplanes, bias=False)
         self.bn_dw = nn.BatchNorm2d(inplanes)
         self.conv_sep = nn.Conv2d(inplanes, planes, kernel_size=1, stride=1, padding=0, bias=False)
         self.bn_sep = nn.BatchNorm2d(planes)

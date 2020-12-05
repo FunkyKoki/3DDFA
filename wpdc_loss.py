@@ -68,7 +68,7 @@ class WPDCLoss(nn.Module):
         (p, offset, alpha_shp, alpha_exp), (pg, offsetg, alpha_shpg, alpha_expg) \
             = self.reconstruct_and_parse(input, target)
 
-        input = self.param_std * input + self.param_mean
+        input = self.param_std * input + self.param_mean    # (N, 62)
         target = self.param_std * target + self.param_mean
 
         N = input.shape[0]
@@ -82,7 +82,7 @@ class WPDCLoss(nn.Module):
         offset_norm = sqrt(w_shp_base.shape[0] // 3)
 
         # for pose
-        param_diff_pose = torch.abs(input[:, :11] - target[:, :11])
+        param_diff_pose = torch.abs(input[:, :11] - target[:, :11])  # 因为权重并不存在负数
         for ind in range(11):
             if ind in [0, 4, 8]:
                 weights[:, ind] = param_diff_pose[:, ind] * tmpv_norm[:, 0]
@@ -98,7 +98,7 @@ class WPDCLoss(nn.Module):
         magic_number = 0.00057339936  # scale
         param_diff_shape_exp = torch.abs(input[:, 12:] - target[:, 12:])
         # weights[:, 12:] = magic_number * param_diff_shape_exp * self.w_norm
-        w = torch.cat((w_shp_base, w_exp_base), dim=1)
+        w = torch.cat((w_shp_base, w_exp_base), dim=1)  # (200, 50)
         w_norm = torch.norm(w, dim=0)
         # print('here')
         weights[:, 12:] = magic_number * param_diff_shape_exp * w_norm

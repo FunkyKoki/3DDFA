@@ -66,7 +66,7 @@ def parse_roi_box_from_landmark(pts):
     radius = max(bbox[2] - bbox[0], bbox[3] - bbox[1]) / 2
     bbox = [center[0] - radius, center[1] - radius, center[0] + radius, center[1] + radius]
 
-    llength = sqrt((bbox[2] - bbox[0]) ** 2 + (bbox[3] - bbox[1]) ** 2)
+    llength = sqrt((bbox[2] - bbox[0]) ** 2 + (bbox[3] - bbox[1]) ** 2)  # 对角线长度
     center_x = (bbox[2] + bbox[0]) / 2
     center_y = (bbox[3] + bbox[1]) / 2
 

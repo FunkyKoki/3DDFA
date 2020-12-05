@@ -55,7 +55,7 @@ class VDCLoss(nn.Module):
             = self.reconstruct_and_parse(input, target)
 
         N = input.shape[0]
-        offset[:, -1] = offsetg[:, -1]
+        offset[:, -1] = offsetg[:, -1]  # cleardusk: I made z equal to gt, in other words, z does not contribute to any gradients. The effect can be ignored in 3d dense face alignment tasks in previous exps.
         gt_vertex = pg @ (self.u + self.w_shp @ alpha_shpg + self.w_exp @ alpha_expg) \
             .view(N, -1, 3).permute(0, 2, 1) + offsetg
         vertex = p @ (self.u + self.w_shp @ alpha_shp + self.w_exp @ alpha_exp) \

@@ -53,7 +53,7 @@ def reconstruct_vertex(param, whitening=True, dense=False, transform=True):
 
         if transform:
             # transform to image coordinate space
-            vertex[1, :] = std_size + 1 - vertex[1, :]
+            vertex[1, :] = std_size + 1 - vertex[1, :]  # have a question here
 
     return vertex
 
